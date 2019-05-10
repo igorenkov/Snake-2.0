@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+п»ї#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,59 +19,58 @@
 
 int game_over;
 char global_symb = '0';
-//int count;
 
-//Структура с координатами части тела змейки(row - номер строки, col - номер столбца)
+//РЎС‚СЂСѓРєС‚СѓСЂР° СЃ РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё С‡Р°СЃС‚Рё С‚РµР»Р° Р·РјРµР№РєРё(row - РЅРѕРјРµСЂ СЃС‚СЂРѕРєРё, col - РЅРѕРјРµСЂ СЃС‚РѕР»Р±С†Р°)
 typedef struct place {
 	int row, col;
 } place;
-//Структура с информацией о змейке
+//РЎС‚СЂСѓРєС‚СѓСЂР° СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ Р·РјРµР№РєРµ
 typedef struct Snake {
-	place head;	//Координаты головы
-	place* body;	//Указатель на массив с координатами всех частей тела змеи(0-й элемент в массиве - голова)
-	int length;	//Длина змеи
-	int score;	//Кол-во очков в игре (число съеденных яблок)
-	char direct;
-	int move_x;
+	place head;	//РљРѕРѕСЂРґРёРЅР°С‚С‹ РіРѕР»РѕРІС‹
+	place* body;	//РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РјР°СЃСЃРёРІ СЃ РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё РІСЃРµС… С‡Р°СЃС‚РµР№ С‚РµР»Р° Р·РјРµРё(0-Р№ СЌР»РµРјРµРЅС‚ РІ РјР°СЃСЃРёРІРµ - РіРѕР»РѕРІР°)
+	int length;	//Р”Р»РёРЅР° Р·РјРµРё
+	int score;	//РљРѕР»-РІРѕ РѕС‡РєРѕРІ РІ РёРіСЂРµ (С‡РёСЃР»Рѕ СЃСЉРµРґРµРЅРЅС‹С… СЏР±Р»РѕРє)
+	char direct; //РЎРёРјРІРѕР» РіРѕР»РѕРІС‹ Р·РјРµР№РєРё
+	int move_x; //РќР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ РіРѕР»РѕРІС‹
 	int move_y;
-	int life;
-	char up;
+	int life; //Р§С‚Рѕ-С‚Рѕ РІСЂРѕРґРµ РёРЅРґРµРєСЃР°
+	char up; //РљРЅРѕРїРєРё РґРІРёР¶РµРЅРёСЏ РЅР° РєР»Р°РІРёР°С‚СѓСЂРµ
 	char down;
 	char left;
 	char right;
 } Snake;
 
 typedef struct Field {
-	int width;	//Ширина поля
-	int height;	//Высота поля
-	int time;	//Время обновления кадров
-	float persentage_of_walls;	//Процент заполнения поля стенами
-	float persentage_of_apples;		//Процент заполнения свободного поля яблоками
-	int maximum;	//Количество яблок на поле
-	char** arr;	//Указатель на поле (двумерный массив из символов)
-	int apples;
+	int width;	//РЁРёСЂРёРЅР° РїРѕР»СЏ
+	int height;	//Р’С‹СЃРѕС‚Р° РїРѕР»СЏ
+	int time;	//Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РєР°РґСЂРѕРІ
+	float persentage_of_walls;	//РџСЂРѕС†РµРЅС‚ Р·Р°РїРѕР»РЅРµРЅРёСЏ РїРѕР»СЏ СЃС‚РµРЅР°РјРё
+	float persentage_of_apples;		//РџСЂРѕС†РµРЅС‚ Р·Р°РїРѕР»РЅРµРЅРёСЏ СЃРІРѕР±РѕРґРЅРѕРіРѕ РїРѕР»СЏ СЏР±Р»РѕРєР°РјРё
+	int maximum;	//РљРѕР»РёС‡РµСЃС‚РІРѕ СЏР±Р»РѕРє РЅР° РїРѕР»Рµ
+	char** arr;	//РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РїРѕР»Рµ (РґРІСѓРјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ РёР· СЃРёРјРІРѕР»РѕРІ)
+	int apples; //РљРѕР»РёС‡РµСЃС‚РІРѕ РЅРµ СЃРѕР±СЂР°РЅРЅС‹С… СЏР±Р»РѕРє
 } Field;
-//Функция для помещения курсора в точку (x, y) (взял с форума)
+//Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРѕРјРµС‰РµРЅРёСЏ РєСѓСЂСЃРѕСЂР° РІ С‚РѕС‡РєСѓ (x, y) (РІР·СЏР» СЃ С„РѕСЂСѓРјР°)
 void setcur(int x, int y) {
 	COORD coord;
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 };
-//Функция очистки строки в n-й строчке под полем (так проще вводить текст)
+//Р¤СѓРЅРєС†РёСЏ РѕС‡РёСЃС‚РєРё СЃС‚СЂРѕРєРё РІ n-Р№ СЃС‚СЂРѕС‡РєРµ РїРѕРґ РїРѕР»РµРј (С‚Р°Рє РїСЂРѕС‰Рµ РІРІРѕРґРёС‚СЊ С‚РµРєСЃС‚)
 void clean_string(Field* field, int n) {
 	setcur(0, field->height + 2 + n);
 	printf("                                                                                                        ");
 	setcur(0, field->height + 2 + n);
 }
-//Просто функция с инициализацией переменных
+//РџСЂРѕСЃС‚Рѕ С„СѓРЅРєС†РёСЏ СЃ РёРЅРёС†РёР°Р»РёР·Р°С†РёРµР№ РїРµСЂРµРјРµРЅРЅС‹С…
 void start() {
 	game_over = 0;
 	//	count = 0;
 }
-//Функция инициализации змеи
+//Р¤СѓРЅРєС†РёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Р·РјРµРё
 void init_snake(Snake* snake, Field* field, int x, int y, int num) {
-	//Координаты головы изначально - (x, y)
+	//РљРѕРѕСЂРґРёРЅР°С‚С‹ РіРѕР»РѕРІС‹ РёР·РЅР°С‡Р°Р»СЊРЅРѕ - (x, y)
 	snake->body = (place*)malloc(sizeof(place) * field->height * field->width);
 	snake->head.col = x;
 	snake->head.row = y;
@@ -95,7 +94,7 @@ void init_snake(Snake* snake, Field* field, int x, int y, int num) {
 		snake->right = 'd';
 	}
 }
-//Функция рандомного заполнения стенами
+//Р¤СѓРЅРєС†РёСЏ СЂР°РЅРґРѕРјРЅРѕРіРѕ Р·Р°РїРѕР»РЅРµРЅРёСЏ СЃС‚РµРЅР°РјРё
 void put_wall(Field* field) {
 	int wall_x, wall_y;
 	for (int i = 0; i < (float)field->persentage_of_walls * field->width * field->height / 100; i++) {
@@ -106,7 +105,7 @@ void put_wall(Field* field) {
 		field->arr[wall_y][wall_x] = '#';
 	}
 }
-//Функция рандомного заполнения яблоками
+//Р¤СѓРЅРєС†РёСЏ СЂР°РЅРґРѕРјРЅРѕРіРѕ Р·Р°РїРѕР»РЅРµРЅРёСЏ СЏР±Р»РѕРєР°РјРё
 void put_apple(Field* field) {
 	int apple_x, apple_y;
 	int maximum = 0;
@@ -121,7 +120,7 @@ void put_apple(Field* field) {
 	field->maximum = maximum;
 	field->apples = maximum;
 }
-//Функция инициализации поля (считывание размеров и характеристик, постройка граничных стен, постройка стен внутри, заполнение яблоками)
+//Р¤СѓРЅРєС†РёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РїРѕР»СЏ (СЃС‡РёС‚С‹РІР°РЅРёРµ СЂР°Р·РјРµСЂРѕРІ Рё С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє, РїРѕСЃС‚СЂРѕР№РєР° РіСЂР°РЅРёС‡РЅС‹С… СЃС‚РµРЅ, РїРѕСЃС‚СЂРѕР№РєР° СЃС‚РµРЅ РІРЅСѓС‚СЂРё, Р·Р°РїРѕР»РЅРµРЅРёРµ СЏР±Р»РѕРєР°РјРё)
 void init_field(Field* field) {
 	int speed;
 	int flag = 0;
@@ -153,12 +152,12 @@ void init_field(Field* field) {
 		}
 	}
 	system("cls");
-	//Выделение памяти под массив с симолами поля
+	//Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ РјР°СЃСЃРёРІ СЃ СЃРёРјРѕР»Р°РјРё РїРѕР»СЏ
 	field->arr = (char**)malloc(sizeof(char*) * (field->height + 2));
 	for (int i = 0; i < field->height + 2; i++) {
 		field->arr[i] = (char*)malloc(sizeof(char) * (field->width + 2));
 	}
-	//Постройка границ
+	//РџРѕСЃС‚СЂРѕР№РєР° РіСЂР°РЅРёС†
 	for (int i = 0; i < field->width + 2; i++) {
 		field->arr[0][i] = '#';
 		field->arr[field->height + 1][i] = '#';
@@ -172,14 +171,14 @@ void init_field(Field* field) {
 			field->arr[i][j] = ' ';
 		}
 	}
-	//Постройка стен внутри, заполнение яблоками
+	//РџРѕСЃС‚СЂРѕР№РєР° СЃС‚РµРЅ РІРЅСѓС‚СЂРё, Р·Р°РїРѕР»РЅРµРЅРёРµ СЏР±Р»РѕРєР°РјРё
 	put_wall(field);
 	put_apple(field);
 }
-//Функция стартует с точки (1, 1) и, двигаясь в порядке "вверх, вправо, вниз, влево", заполняет пустые клетки символом "*" (вместо яблок ставится символ "%" исключительно для удобства)
+//Р¤СѓРЅРєС†РёСЏ СЃС‚Р°СЂС‚СѓРµС‚ СЃ С‚РѕС‡РєРё (1, 1) Рё, РґРІРёРіР°СЏСЃСЊ РІ РїРѕСЂСЏРґРєРµ "РІРІРµСЂС…, РІРїСЂР°РІРѕ, РІРЅРёР·, РІР»РµРІРѕ", Р·Р°РїРѕР»РЅСЏРµС‚ РїСѓСЃС‚С‹Рµ РєР»РµС‚РєРё СЃРёРјРІРѕР»РѕРј "*" (РІРјРµСЃС‚Рѕ СЏР±Р»РѕРє СЃС‚Р°РІРёС‚СЃСЏ СЃРёРјРІРѕР» "%" РёСЃРєР»СЋС‡РёС‚РµР»СЊРЅРѕ РґР»СЏ СѓРґРѕР±СЃС‚РІР°)
 void check_cell(int y, int x, Field* field, int recurs) {
 	if (field->arr[y][x] == ' ' && recurs < 4500) {
-		recurs++;	//Счётчик для контроля переполнения стека
+		recurs++;	//РЎС‡С‘С‚С‡РёРє РґР»СЏ РєРѕРЅС‚СЂРѕР»СЏ РїРµСЂРµРїРѕР»РЅРµРЅРёСЏ СЃС‚РµРєР°
 		field->arr[y][x] = '*';
 		check_cell(y - 1, x, field, recurs);
 		check_cell(y, x + 1, field, recurs);
@@ -187,8 +186,8 @@ void check_cell(int y, int x, Field* field, int recurs) {
 		check_cell(y, x - 1, field, recurs);
 	}
 	else if (field->arr[y][x] == '@' && recurs < 4500) {
-		recurs++;	//Счётчик для контроля переполнения стека
-	//	count++;	//Счётчик доступных яблок (т.е. тех, до которых змейка может добраться)
+		recurs++;	//РЎС‡С‘С‚С‡РёРє РґР»СЏ РєРѕРЅС‚СЂРѕР»СЏ РїРµСЂРµРїРѕР»РЅРµРЅРёСЏ СЃС‚РµРєР°
+	//	count++;	//РЎС‡С‘С‚С‡РёРє РґРѕСЃС‚СѓРїРЅС‹С… СЏР±Р»РѕРє (С‚.Рµ. С‚РµС…, РґРѕ РєРѕС‚РѕСЂС‹С… Р·РјРµР№РєР° РјРѕР¶РµС‚ РґРѕР±СЂР°С‚СЊСЃСЏ)
 		field->arr[y][x] = '%';
 		check_cell(y - 1, x, field, recurs);
 		check_cell(y, x + 1, field, recurs);
@@ -196,7 +195,7 @@ void check_cell(int y, int x, Field* field, int recurs) {
 		check_cell(y, x - 1, field, recurs);
 	}
 }
-//Функция проверки поля на то, что до всех яблок змейка добраться и что змейка может из точки входа в лабиринт прийти в точку выхода
+//Р¤СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂРєРё РїРѕР»СЏ РЅР° С‚Рѕ, С‡С‚Рѕ РґРѕ РІСЃРµС… СЏР±Р»РѕРє Р·РјРµР№РєР° РґРѕР±СЂР°С‚СЊСЃСЏ Рё С‡С‚Рѕ Р·РјРµР№РєР° РјРѕР¶РµС‚ РёР· С‚РѕС‡РєРё РІС…РѕРґР° РІ Р»Р°Р±РёСЂРёРЅС‚ РїСЂРёР№С‚Рё РІ С‚РѕС‡РєСѓ РІС‹С…РѕРґР°
 void check_access(Field* field, int recurs) {
 	check_cell(1, 1, field, recurs);
 	if (/*(count == field->maximum) &&*/ ((field->arr[1][1] == '*') || (field->arr[1][1] == '%')) && ((field->arr[field->height][field->width] == '*') || (field->arr[field->height][field->width] == '%'))) {
@@ -207,7 +206,7 @@ void check_access(Field* field, int recurs) {
 	}
 
 }
-//Функция очистки массива от символов "*" и "%", оставшизся после функции check_cell и замены на изначальные символы " " и "@"
+//Р¤СѓРЅРєС†РёСЏ РѕС‡РёСЃС‚РєРё РјР°СЃСЃРёРІР° РѕС‚ СЃРёРјРІРѕР»РѕРІ "*" Рё "%", РѕСЃС‚Р°РІС€РёР·СЃСЏ РїРѕСЃР»Рµ С„СѓРЅРєС†РёРё check_cell Рё Р·Р°РјРµРЅС‹ РЅР° РёР·РЅР°С‡Р°Р»СЊРЅС‹Рµ СЃРёРјРІРѕР»С‹ " " Рё "@"
 void clean(Field* field) {
 	setcur(0, 0);
 	for (int i = 0; i < field->height + 2; i++) {
@@ -221,7 +220,7 @@ void clean(Field* field) {
 		}
 	}
 }
-//Функция сохранения змейки и поля в файл "Progress.txt"
+//Р¤СѓРЅРєС†РёСЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ Р·РјРµР№РєРё Рё РїРѕР»СЏ РІ С„Р°Р№Р» "Progress.txt"
 void save(Snake* snake1, Snake* snake2, Field* field) {
 	FILE* fp = fopen("Progress.txt", "w");
 	fprintf(fp, "%d %d\n", field->height, field->width);
@@ -253,41 +252,41 @@ void save(Snake* snake1, Snake* snake2, Field* field) {
 void move_snake(Snake* snake, char symb) {
 	if (snake->life == 1 || snake->life == 2) {
 		if (symb == snake->up) {
-			if (snake->direct != 'v') {	//Проверка, что змейка не пойдёт назад (т.е. сама в себя)
+			if (snake->direct != 'v') {	//РџСЂРѕРІРµСЂРєР°, С‡С‚Рѕ Р·РјРµР№РєР° РЅРµ РїРѕР№РґС‘С‚ РЅР°Р·Р°Рґ (С‚.Рµ. СЃР°РјР° РІ СЃРµР±СЏ)
 				snake->move_x = 0;
 				snake->move_y = -1;
-				snake->direct = '^';	//Изменение символа головы
+				snake->direct = '^';	//РР·РјРµРЅРµРЅРёРµ СЃРёРјРІРѕР»Р° РіРѕР»РѕРІС‹
 			}
 		}
 		else if (symb == snake->down) {
-			if (snake->direct != '^') {	//Проверка, что змейка не пойдёт назад (т.е. сама в себя)
+			if (snake->direct != '^') {	//РџСЂРѕРІРµСЂРєР°, С‡С‚Рѕ Р·РјРµР№РєР° РЅРµ РїРѕР№РґС‘С‚ РЅР°Р·Р°Рґ (С‚.Рµ. СЃР°РјР° РІ СЃРµР±СЏ)
 				snake->move_x = 0;
 				snake->move_y = 1;
-				snake->direct = 'v';	//Изменение символа головы
+				snake->direct = 'v';	//РР·РјРµРЅРµРЅРёРµ СЃРёРјРІРѕР»Р° РіРѕР»РѕРІС‹
 			}
 		}
 		else if (symb == snake->left) {
-			if (snake->direct != '>') {	//Проверка, что змейка не пойдёт назад (т.е. сама в себя)
+			if (snake->direct != '>') {	//РџСЂРѕРІРµСЂРєР°, С‡С‚Рѕ Р·РјРµР№РєР° РЅРµ РїРѕР№РґС‘С‚ РЅР°Р·Р°Рґ (С‚.Рµ. СЃР°РјР° РІ СЃРµР±СЏ)
 				snake->move_x = -1;
 				snake->move_y = 0;
-				snake->direct = '<';	//Изменение символа головы
+				snake->direct = '<';	//РР·РјРµРЅРµРЅРёРµ СЃРёРјРІРѕР»Р° РіРѕР»РѕРІС‹
 			}
 		}
 		else if (symb == snake->right) {
-			if (snake->direct != '<') {	//Проверка, что змейка не пойдёт назад (т.е. сама в себя)
+			if (snake->direct != '<') {	//РџСЂРѕРІРµСЂРєР°, С‡С‚Рѕ Р·РјРµР№РєР° РЅРµ РїРѕР№РґС‘С‚ РЅР°Р·Р°Рґ (С‚.Рµ. СЃР°РјР° РІ СЃРµР±СЏ)
 				snake->move_x = 1;
 				snake->move_y = 0;
-				snake->direct = '>';	//Изменение символа головы
+				snake->direct = '>';	//РР·РјРµРЅРµРЅРёРµ СЃРёРјРІРѕР»Р° РіРѕР»РѕРІС‹
 			}
 		}
 	}
 }
-//Функция чтения направления движения с клавиатуры
+//Р¤СѓРЅРєС†РёСЏ С‡С‚РµРЅРёСЏ РЅР°РїСЂР°РІР»РµРЅРёСЏ РґРІРёР¶РµРЅРёСЏ СЃ РєР»Р°РІРёР°С‚СѓСЂС‹
 void move(Snake* snake1, Snake* snake2, Field* field) {
-	//Условие на первое движение только вниз
+	//РЈСЃР»РѕРІРёРµ РЅР° РїРµСЂРІРѕРµ РґРІРёР¶РµРЅРёРµ С‚РѕР»СЊРєРѕ РІРЅРёР·
 	int flag = 0;
 	char temp;
-	if (snake1->head.col == 1 && snake1->head.row == 0) {
+	if (snake1->head.col == 1 && snake1->head.row == 0) {	//СѓСЃР»РѕРІРёРµ РЅР° РїРµСЂРІРѕРµ РґРІРёР¶РµРЅРёРµ
 		while (!flag) {
 			if (_kbhit()) {
 				temp = _getch();
@@ -305,7 +304,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 						Sleep(1000);
 						clean_string(field, 1);
 					}
-					//Если яблок изначально нет, генерируется другая надпись
+					//Р•СЃР»Рё СЏР±Р»РѕРє РёР·РЅР°С‡Р°Р»СЊРЅРѕ РЅРµС‚, РіРµРЅРµСЂРёСЂСѓРµС‚СЃСЏ РґСЂСѓРіР°СЏ РЅР°РґРїРёСЃСЊ
 					if (field->maximum == snake1->score) {
 						clean_string(field, 2);
 						printf("There are no apples here. Find a way out!");
@@ -318,7 +317,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 			}
 		}
 	}
-	else if (_kbhit()) {	//функция работает только при вводе символа
+	else if (_kbhit()) {	//С„СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ РїСЂРё РІРІРѕРґРµ СЃРёРјРІРѕР»Р°
 		temp = _getch();
 		if (temp == 'c') {
 			clean_string(field, 1);
@@ -326,12 +325,12 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 			while (!flag) {
 				if (_kbhit()) {
 					switch (_getch()) {
-					case 'c':	//Условие на продолжение игры
+					case 'c':	//РЈСЃР»РѕРІРёРµ РЅР° РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РёРіСЂС‹
 						flag = 1;
 						clean_string(field, 1);
 						printf("Up, Down, Left, Right - right snake control. 'W', 'S', 'A', 'D' - left snake control, 'C' - pause.");
 						break;
-					case 'f':	//Условие на запись в файл
+					case 'f':	//РЈСЃР»РѕРІРёРµ РЅР° Р·Р°РїРёСЃСЊ РІ С„Р°Р№Р»
 						save(snake1, snake2, field);
 						clean_string(field, 1);
 						printf("Your progress is saved!");
@@ -339,7 +338,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 						clean_string(field, 1);
 						printf("Press 'C' to continue, 'F' to save your progress, 'E' to finish the game.");
 						break;
-					case 'e':	//Условие на выход из игры
+					case 'e':	//РЈСЃР»РѕРІРёРµ РЅР° РІС‹С…РѕРґ РёР· РёРіСЂС‹
 						clean_string(field, 1);
 						clean_string(field, 2);
 						printf("See you again! :)\n");
@@ -349,7 +348,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 				}
 			}
 		}
-		else if (temp == -32) {
+		else if (temp == -32) { //РџРµСЂРІРѕР№ Р±С‹Р»Р° РЅР°Р¶Р°С‚Р° СЃС‚СЂРµР»РєР°
 			move_snake(snake2, _getch());
 			while (_kbhit()) {
 				temp = _getch();
@@ -362,7 +361,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 				}
 			}
 		}
-		else if (temp == 'w' || temp == 's' || temp == 'a' || temp == 'd') {
+		else if (temp == 'w' || temp == 's' || temp == 'a' || temp == 'd') {	//РџРµСЂРІРѕР№ Р±С‹Р»Р° РЅР°Р¶Р°С‚Р° РєР»Р°РІРёС€Р°
 			move_snake(snake1, temp);
 			while (_kbhit()) {
 				temp = _getch();
@@ -374,7 +373,7 @@ void move(Snake* snake1, Snake* snake2, Field* field) {
 		}
 	}
 }
-//Функция рисования символа symb в точке (x, y)
+//Р¤СѓРЅРєС†РёСЏ СЂРёСЃРѕРІР°РЅРёСЏ СЃРёРјРІРѕР»Р° symb РІ С‚РѕС‡РєРµ (x, y) СЃ С†РІРµС‚РѕРј
 void draw_symbol(int y, int x, char symb, int color) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -397,7 +396,7 @@ void draw_symbol(int y, int x, char symb, int color) {
 
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 7));
 }
-//Главная функция проверки на столкновение или поедание яблока
+//Р“Р»Р°РІРЅР°СЏ С„СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂРєРё РЅР° СЃС‚РѕР»РєРЅРѕРІРµРЅРёРµ РёР»Рё РїРѕРµРґР°РЅРёРµ СЏР±Р»РѕРєР°
 void check(Snake* snake, Field* field) {
 	if (snake->head.col == field->width / 2 + 1 && snake->head.row == field->height + 1) {
 
@@ -408,13 +407,13 @@ void check(Snake* snake, Field* field) {
 		}
 		snake->move_x = 0;
 		snake->move_y = 0;
-	}	//Столкновение
+	}	//РЎС‚РѕР»РєРЅРѕРІРµРЅРёРµ
 	else if (field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '#' || field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == 'o' || field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '^' || field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == 'v' || field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '<' || field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '>') {
 		snake->life += 2;
 		snake->move_x = 0;
 		snake->move_y = 0;
 	}
-	else if (field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '@') {	//Поедание яблока
+	else if (field->arr[snake->head.row + snake->move_y][snake->head.col + snake->move_x] == '@') {	//РџРѕРµРґР°РЅРёРµ СЏР±Р»РѕРєР°
 		field->arr[snake->head.row][snake->head.col] = 'o';
 		draw_symbol(snake->head.row, snake->head.col, 'o', snake->life);
 
@@ -435,7 +434,7 @@ void check(Snake* snake, Field* field) {
 		snake->score++;
 		field->apples--;
 		
-		//Вывод информации об очках
+		//Р’С‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РѕС‡РєР°С…
 		if (snake->life == 1) {
 			clean_string(field, 2);
 			printf("Apples number - %d.", field->apples);
@@ -449,7 +448,7 @@ void check(Snake* snake, Field* field) {
 			printf("Apples number - %d.", field->apples);
 		}
 	}
-	else {	//Движение на следующую пустую клетку без яблок
+	else {	//Р”РІРёР¶РµРЅРёРµ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ РїСѓСЃС‚СѓСЋ РєР»РµС‚РєСѓ Р±РµР· СЏР±Р»РѕРє
 		field->arr[snake->head.row][snake->head.col] = 'o';
 		draw_symbol(snake->head.row, snake->head.col, 'o', snake->life);
 
@@ -469,7 +468,7 @@ void check(Snake* snake, Field* field) {
 		field->arr[snake->head.row][snake->head.col] = snake->direct;
 		draw_symbol(snake->head.row, snake->head.col, snake->direct, snake->life);
 	}
-	//Условие на удаление символа " " в точке старта после начала игры
+	//РЈСЃР»РѕРІРёРµ РЅР° СѓРґР°Р»РµРЅРёРµ СЃРёРјРІРѕР»Р° " " РІ С‚РѕС‡РєРµ СЃС‚Р°СЂС‚Р° РїРѕСЃР»Рµ РЅР°С‡Р°Р»Р° РёРіСЂС‹
 	if (field->arr[0][1] == ' ') {
 		field->arr[0][1] = '#';
 		draw_symbol(0, 1, '#', 0);
@@ -478,13 +477,13 @@ void check(Snake* snake, Field* field) {
 		field->arr[0][field->width] = '#';
 		draw_symbol(0, field->width, '#', 0);
 	}
-	//Условие на стирание надписи про старт и "открывает выход из лабиринта", т.е. помещает в точку выхода символ " "
+	//РЈСЃР»РѕРІРёРµ РЅР° СЃС‚РёСЂР°РЅРёРµ РЅР°РґРїРёСЃРё РїСЂРѕ СЃС‚Р°СЂС‚ Рё "РѕС‚РєСЂС‹РІР°РµС‚ РІС‹С…РѕРґ РёР· Р»Р°Р±РёСЂРёРЅС‚Р°", С‚.Рµ. РїРѕРјРµС‰Р°РµС‚ РІ С‚РѕС‡РєСѓ РІС‹С…РѕРґР° СЃРёРјРІРѕР» " "
 	if (snake->head.col == 1 && snake->head.row == 1) {
 		field->arr[field->height + 1][field->width/2 + 1] = ' ';
 		draw_symbol(field->height + 1, field->width/2 + 1, ' ', 0);
 	}
 }
-//Функция проверки на попадание в выход из лабиринта
+//Р¤СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂРєРё РЅР° РїРѕРїР°РґР°РЅРёРµ РІ РІС‹С…РѕРґ РёР· Р»Р°Р±РёСЂРёРЅС‚Р°
 void check_victory(Snake* snake1, Snake* snake2, Field* field) {
 	if ((snake1->life == 5) && (snake2->life == 6)) {
 		game_over = 2;
@@ -496,7 +495,7 @@ void check_victory(Snake* snake1, Snake* snake2, Field* field) {
 		game_over = 1;
 	}
 }
-//Функция рисования всего поля
+//Р¤СѓРЅРєС†РёСЏ СЂРёСЃРѕРІР°РЅРёСЏ РІСЃРµРіРѕ РїРѕР»СЏ
 void draw(Field* field) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	setcur(0, 0);
@@ -508,9 +507,9 @@ void draw(Field* field) {
 	}
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 7));
 }
-//Функция считывания поля и змейки из файла "Progress.txt"
+//Р¤СѓРЅРєС†РёСЏ СЃС‡РёС‚С‹РІР°РЅРёСЏ РїРѕР»СЏ Рё Р·РјРµР№РєРё РёР· С„Р°Р№Р»Р° "Progress.txt"
 void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
-	//Запись информации о поле
+	//Р—Р°РїРёСЃСЊ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕР»Рµ
 	fscanf(fp, "%d", &field->height);
 	fgetc(fp);
 	fscanf(fp, "%d", &field->width);
@@ -523,7 +522,7 @@ void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
 	fgetc(fp);
 	fscanf(fp, "%d", &field->maximum);
 	fgetc(fp);
-	//Выделение памяти под поле и запись поля в массив
+	//Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ РїРѕР»Рµ Рё Р·Р°РїРёСЃСЊ РїРѕР»СЏ РІ РјР°СЃСЃРёРІ
 	field->arr = (char**)malloc(sizeof(char*) * (field->height + 2));
 	for (int i = 0; i < field->height + 2; i++) {
 		field->arr[i] = (char*)malloc(sizeof(char) * (field->width + 2));
@@ -534,12 +533,12 @@ void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
 		}
 		fgetc(fp);
 	}
-	//Выделение памяти под тело змейки и запись информации о змейке
+	//Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ С‚РµР»Рѕ Р·РјРµР№РєРё Рё Р·Р°РїРёСЃСЊ РёРЅС„РѕСЂРјР°С†РёРё Рѕ Р·РјРµР№РєРµ
 	snake1->body = (place*)malloc(sizeof(place) * field->height * field->width);
-	//Запись длины змейки
+	//Р—Р°РїРёСЃСЊ РґР»РёРЅС‹ Р·РјРµР№РєРё
 	fscanf(fp, "%d", &snake1->length);
 	fgetc(fp);
-	//Запись координат сегментов тела змейки в структуру
+	//Р—Р°РїРёСЃСЊ РєРѕРѕСЂРґРёРЅР°С‚ СЃРµРіРјРµРЅС‚РѕРІ С‚РµР»Р° Р·РјРµР№РєРё РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ
 	for (int i = 0; i < snake1->length; i++) {
 		fscanf(fp, "%d", &snake1->body[i].row);
 		fgetc(fp);
@@ -548,19 +547,19 @@ void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
 	}
 	fscanf(fp, "%d", &snake1->life);
 	fgetc(fp);
-	//Запись координат головы
+	//Р—Р°РїРёСЃСЊ РєРѕРѕСЂРґРёРЅР°С‚ РіРѕР»РѕРІС‹
 	snake1->head.col = snake1->body[0].col;
 	snake1->head.row = snake1->body[0].row;
-	fscanf(fp, "%c", &snake1->direct);	//Запись значка головы(^,>,v,<)
+	fscanf(fp, "%c", &snake1->direct);	//Р—Р°РїРёСЃСЊ Р·РЅР°С‡РєР° РіРѕР»РѕРІС‹(^,>,v,<)
 	fgetc(fp);
 	snake1->score = snake1->length - 1;
 
-	//Выделение памяти под тело змейки и запись информации о змейке
+	//Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ С‚РµР»Рѕ Р·РјРµР№РєРё Рё Р·Р°РїРёСЃСЊ РёРЅС„РѕСЂРјР°С†РёРё Рѕ Р·РјРµР№РєРµ
 	snake2->body = (place*)malloc(sizeof(place) * field->height * field->width);
-	//Запись длины змейки
+	//Р—Р°РїРёСЃСЊ РґР»РёРЅС‹ Р·РјРµР№РєРё
 	fscanf(fp, "%d", &snake2->length);
 	fgetc(fp);
-	//Запись координат сегментов тела змейки в структуру
+	//Р—Р°РїРёСЃСЊ РєРѕРѕСЂРґРёРЅР°С‚ СЃРµРіРјРµРЅС‚РѕРІ С‚РµР»Р° Р·РјРµР№РєРё РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ
 	for (int i = 0; i < snake2->length; i++) {
 		fscanf(fp, "%d", &snake2->body[i].row);
 		fgetc(fp);
@@ -569,10 +568,10 @@ void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
 	}
 	fscanf(fp, "%d", &snake2->life);
 	fgetc(fp);
-	//Запись координат головы
+	//Р—Р°РїРёСЃСЊ РєРѕРѕСЂРґРёРЅР°С‚ РіРѕР»РѕРІС‹
 	snake2->head.col = snake2->body[0].col;
 	snake2->head.row = snake2->body[0].row;
-	fscanf(fp, "%c", &snake2->direct);	//Запись значка головы(^,>,v,<)
+	fscanf(fp, "%c", &snake2->direct);	//Р—Р°РїРёСЃСЊ Р·РЅР°С‡РєР° РіРѕР»РѕРІС‹(^,>,v,<)
 	fgetc(fp);
 	snake2->score = snake2->length - 1;
 	field->apples = field->maximum - snake1->score - snake2->score;
@@ -586,7 +585,7 @@ void read(FILE* fp, Snake* snake1, Snake* snake2, Field* field) {
 		snake1->left = 'a';
 		snake1->right = 'd';
 }
-//Функция удаления массива под поле, массива под тело змейки, структуры поля, структуры змейки 
+//Р¤СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ РјР°СЃСЃРёРІР° РїРѕРґ РїРѕР»Рµ, РјР°СЃСЃРёРІР° РїРѕРґ С‚РµР»Рѕ Р·РјРµР№РєРё, СЃС‚СЂСѓРєС‚СѓСЂС‹ РїРѕР»СЏ, СЃС‚СЂСѓРєС‚СѓСЂС‹ Р·РјРµР№РєРё 
 void free_game(Snake* snake1, Snake* snake2, Field* field) {
 	free(snake1->body);
 	free(snake1);
@@ -622,19 +621,19 @@ void get_direction(Snake* snake) {
 int main() {
 	
 	while (1) {
-		Field* field = (Field*)malloc(sizeof(Field));	//Выделение памяти под поле
-		Snake* snake1 = (Snake*)malloc(sizeof(Snake));  //Выделение памяти под змейку
+		Field* field = (Field*)malloc(sizeof(Field));	//Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ РїРѕР»Рµ
+		Snake* snake1 = (Snake*)malloc(sizeof(Snake));  //Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ Р·РјРµР№РєСѓ
 		Snake* snake2 = (Snake*)malloc(sizeof(Snake));
 		start();
 		FILE* fp;
-		int flag = 0;	//Флажок для одной функции ниже
+		int flag = 0;	//Р¤Р»Р°Р¶РѕРє РґР»СЏ РѕРґРЅРѕР№ С„СѓРЅРєС†РёРё РЅРёР¶Рµ
 		int extraflag = 0;
 		int recurs = 0;
 		printf("Press 'C' to continue your last game, 'N' to start a new game.");
 		while (!extraflag) {
 			switch (_getch()) {
 			case 'c':
-				//Условие на вывод из файла
+				//РЈСЃР»РѕРІРёРµ РЅР° РІС‹РІРѕРґ РёР· С„Р°Р№Р»Р°
 				system("cls");
 				fp = fopen("Progress.txt", "r");
 				read(fp, snake1, snake2, field);
@@ -644,11 +643,12 @@ int main() {
 				clean_string(field, 1);
 				printf("Press any key to continue.");
 				
-				//Условие на первое движение
+				//РЈСЃР»РѕРІРёРµ РЅР° РїРµСЂРІРѕРµ РґРІРёР¶РµРЅРёРµ
 				while (!flag) {
 					if (_kbhit()) {
 						flag = 1;
 						clean_string(field, 1);
+						//РўР°Р№РјРµСЂ
 						for (int i = 3; i > 0; i--) {
 							printf("Before start: %d...", i);
 							Sleep(1000);
@@ -660,9 +660,9 @@ int main() {
 				extraflag = 1;
 				break;
 			case 'n':
-				//Условие на новую игру
+				//РЈСЃР»РѕРІРёРµ РЅР° РЅРѕРІСѓСЋ РёРіСЂСѓ
 				system("cls");
-				//Генерация
+				//Р“РµРЅРµСЂР°С†РёСЏ
 				srand(time(NULL));
 				init_field(field);
 				init_snake(snake1, field, 1, 0, 1);
@@ -678,7 +678,7 @@ int main() {
 				break;
 			}
 		}
-		//Непосредственно функция игры
+		//РќРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ С„СѓРЅРєС†РёСЏ РёРіСЂС‹
 		while (!game_over) {
 			move(snake1, snake2, field);
 			if (snake1->move_x != 0 || snake1->move_y != 0) {
@@ -691,8 +691,8 @@ int main() {
 			setcur(0, field->height + 7);
 			Sleep(field->time);
 		}
-		//Вывод результатов
-		if (game_over == -1) {
+		//Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
+		if (game_over == -1) {	//РћР±Р° РІСЂРµР·Р°Р»РёСЃСЊ
 			clean_string(field, 2);
 			clean_string(field, 3);
 			clean_string(field, 4);
@@ -701,7 +701,7 @@ int main() {
 			printf("Left and right players both lost :(");
 			free_game(snake1, snake2, field);
 		}
-		else if (game_over == 1) {
+		else if (game_over == 1) {	//РћРґРёРЅ РІСЂРµР·Р°Р»СЃСЏ, РґСЂСѓРіРѕР№ РґРѕС€С‘Р» РґРѕ С„РёРЅРёС€Р°
 			clean_string(field, 2);
 			clean_string(field, 3);
 			clean_string(field, 4);
@@ -715,7 +715,7 @@ int main() {
 			clean_string(field, 2);
 			free_game(snake1, snake2, field);
 		}
-		else if (game_over == 2) {
+		else if (game_over == 2) {	//РћР±Р° РґРѕС€Р»Рё
 			clean_string(field, 2);
 			clean_string(field, 3);
 			clean_string(field, 4);
@@ -742,18 +742,18 @@ int main() {
 			free_game(snake1, snake2, field);
 		}
 		Sleep(3000);
-		//Условие на начало новой игры или выход
+		//РЈСЃР»РѕРІРёРµ РЅР° РЅР°С‡Р°Р»Рѕ РЅРѕРІРѕР№ РёРіСЂС‹ РёР»Рё РІС‹С…РѕРґ
 		system("cls");
 		flag = 0;
 		printf("Press 'R' to restart the game,'E' to finish the game: ");
 		while (!flag) {
 			if (_kbhit()) {
 				switch (_getch()) {
-				case 'r':	//Условие на продолжение игры
+				case 'r':	//РЈСЃР»РѕРІРёРµ РЅР° РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РёРіСЂС‹
 					flag = 1;
 					system("cls");
 					break;
-				case 'e':	//Условие на выход из игры
+				case 'e':	//РЈСЃР»РѕРІРёРµ РЅР° РІС‹С…РѕРґ РёР· РёРіСЂС‹
 					system("cls");
 					printf("See you again! :)\n");
 					Sleep(1000);
